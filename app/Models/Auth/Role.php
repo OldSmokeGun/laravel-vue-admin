@@ -1,0 +1,210 @@
+<?php
+
+namespace App\Models\Auth;
+
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
+
+/**
+ * App\Models\Auth\Role
+ *
+ * @property int $id
+ * @property string $name 角色名称
+ * @property string $description 角色描述
+ * @property int $status 是否可用（ 1 是 0 否 ）
+ * @property \Illuminate\Support\Carbon $create_time
+ * @property \Illuminate\Support\Carbon $update_time
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Auth\Role newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Auth\Role newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Auth\Role query()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Auth\Role whereCreateTime($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Auth\Role whereDescription($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Auth\Role whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Auth\Role whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Auth\Role whereStatus($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Auth\Role whereUpdateTime($value)
+ * @mixin \Eloquent
+ */
+class Role extends Model
+{
+    protected $table = 'roles';
+    protected $dateFormat = 'U';
+
+    const CREATED_AT = 'create_time';
+    const UPDATED_AT = 'update_time';
+
+    public function getCreateTimeAttribute($value)
+    {
+        return date('Y-m-d H:i:s', $value);
+    }
+
+    public function getUpdateTimeAttribute($value)
+    {
+        return date('Y-m-d H:i:s', $value);
+    }
+
+    public function permissions()
+    {
+        return $this->belongsToMany(Permission::class, 'roles_permissions', 'role_id', 'permission_id');
+    }
+
+    /**
+     * @param Builder $query
+     * @param string $order
+     *
+     * @return mixed
+     */
+    public function scopeIdSort($query, $order = 'asc')
+    {
+        return $query->orderBy('id', $order);
+    }
+
+    /**
+     * @param Builder $query
+     *
+     * @return mixed
+     */
+    public function scopeEnable($query)
+    {
+        return $query->where(['status' => 1]);
+    }
+
+    public function getRoleList(array $search): ?array
+    {
+        $status       = $search['status'];
+        $searchStatus = $search['status'] === '' ? false : true;
+
+        $roles = $this->select([
+                'id',
+                'name',
+                'description',
+                'status',
+                'create_time',
+                'update_time'
+            ])
+            ->when($search['name'], function ($query, $name) {
+                $query->where('name', 'like', "%{$name}%");
+            })
+            ->when($searchStatus, function ($query) use ($status) {
+                $query->where(['status' => $status]);
+            })
+            ->idSort()
+            ->paginate($search['limit']);
+
+        foreach ( $roles as $role )
+        {
+            $role->permissions = $role->permissions()->select(['permissions.id'])->get()->toArray();
+        }
+
+        return $roles->toArray();
+    }
+
+    public function createRole(array $role): bool
+    {
+        DB::beginTransaction();
+
+        try
+        {
+            $this->name        = $role['name'];
+            $this->description = $role['description'];
+            $this->status      = $role['status'];
+
+            if ( !$this->save() ) throw new \Exception();
+
+            if ( $role['permissions'] )
+            {
+                $rolesPermissions = [];
+
+                foreach ( $role['permissions'] as $role )
+                {
+                    $rolesPermissions[] = ['role_id' => $this->id, 'permission_id' => $role, 'create_time' => time()];
+                }
+
+                if ( !RolePermission::insert($rolesPermissions) ) throw new \Exception();
+            }
+
+            DB::commit();
+            return true;
+
+        } catch ( \Exception $exception ) {
+            DB::rollBack();
+            return false;
+        }
+
+    }
+
+    public function updateRole(array $role): bool
+    {
+        $model = $this->find($role['id']);
+
+        DB::beginTransaction();
+
+        try
+        {
+            $model->name        = $role['name'];
+            $model->description = $role['description'];
+            $model->status      = $role['status'];
+
+            if ( !$model->save() ) throw new \Exception();
+
+            RolePermission::where(['role_id' => $role['id']])->delete();
+
+            if ( $role['permissions'] )
+            {
+                $rolesPermissions = [];
+
+                foreach ( $role['permissions'] as $permission )
+                {
+                    $rolesPermissions[] = ['role_id' => $role['id'], 'permission_id' => $permission, 'create_time' => time()];
+                }
+
+                if ( !RolePermission::insert($rolesPermissions) ) throw new \Exception();
+            }
+
+            DB::commit();
+            return true;
+
+        } catch ( \Exception $exception ) {
+            DB::rollBack();
+            return false;
+        }
+
+    }
+
+    public function deleteRole(int $id): bool
+    {
+        DB::beginTransaction();
+
+        try
+        {
+            AdminRole::where(['role_id' => $id])->delete();
+            RolePermission::where(['role_id' => $id])->delete();
+            $roleResult = $this->destroy($id);
+
+            if ( !$roleResult ) throw new \Exception();
+
+            DB::commit();
+            return true;
+
+        } catch ( \Exception $exception ) {
+            DB::rollBack();
+            return false;
+        }
+    }
+
+    public function editRole(array $fields): bool
+    {
+        $model = $this->find($fields['id']);
+
+        unset($fields['id']);
+
+        foreach ( $fields as $fieldKey => $fieldValue )
+        {
+            $model->$fieldKey = $fieldValue;
+        }
+
+        return  $model->save();
+    }
+
+}
