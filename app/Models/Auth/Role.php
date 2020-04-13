@@ -6,26 +6,6 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 
-/**
- * App\Models\Auth\Role
- *
- * @property int $id
- * @property string $name 角色名称
- * @property string $description 角色描述
- * @property int $status 是否可用（ 1 是 0 否 ）
- * @property \Illuminate\Support\Carbon $create_time
- * @property \Illuminate\Support\Carbon $update_time
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Auth\Role newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Auth\Role newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Auth\Role query()
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Auth\Role whereCreateTime($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Auth\Role whereDescription($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Auth\Role whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Auth\Role whereName($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Auth\Role whereStatus($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Auth\Role whereUpdateTime($value)
- * @mixin \Eloquent
- */
 class Role extends Model
 {
     protected $table = 'roles';

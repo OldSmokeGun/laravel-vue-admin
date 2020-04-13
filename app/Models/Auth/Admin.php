@@ -10,37 +10,6 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 
-/**
- * App\Models\Auth\Admin
- *
- * @property int $id
- * @property string $username 用户名
- * @property string $password 用户密码
- * @property string $avatar 用户头像
- * @property string $email email
- * @property string $token 用户 token
- * @property int $status 是否可用（ 1 是 0 否 ）
- * @property int $last_login_time 最后登陆时间
- * @property string $last_login_ip 最后登陆 IP
- * @property \Illuminate\Support\Carbon $create_time
- * @property \Illuminate\Support\Carbon $update_time
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Auth\Admin newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Auth\Admin newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Auth\Admin query()
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Auth\Admin whereAvatar($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Auth\Admin whereCreateTime($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Auth\Admin whereEmail($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Auth\Admin whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Auth\Admin whereLastLoginIp($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Auth\Admin whereLastLoginTime($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Auth\Admin wherePassword($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Auth\Admin whereStatus($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Auth\Admin whereToken($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Auth\Admin whereUpdateTime($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Auth\Admin whereUsername($value)
- * @mixin \Eloquent
- * @property-read mixed $last_login_date
- */
 class Admin extends Model
 {
     protected $table = 'admins';
