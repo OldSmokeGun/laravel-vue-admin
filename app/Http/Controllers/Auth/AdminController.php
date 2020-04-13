@@ -186,6 +186,11 @@ class AdminController extends Controller
             return HttpResponse::failedResponse('最多只能选择三个角色');
         }
 
+        if ( (int) $request->input('id') === 1 && (int) $admin['status'] === 0 )
+        {
+            return HttpResponse::failedResponse('不能修改超级管理员状态');
+        }
+
         $model = new AdminModel();
 
         $result = $model->updateAdmin($admin);
@@ -245,6 +250,11 @@ class AdminController extends Controller
         ];
 
         $fileds = array_intersect_key($params, $fieldsWhiteList);
+
+        if ( (int) $request->input('id') === 1 && (int) $params['status'] === 0 )
+        {
+            return HttpResponse::failedResponse('不能编辑超级管理员状态');
+        }
 
         $model = new AdminModel();
 
