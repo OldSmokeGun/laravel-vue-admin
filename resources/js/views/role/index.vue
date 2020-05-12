@@ -61,7 +61,7 @@
               size="mini"
               :loading="scope.row.editStatusBtnLoading"
               @click="handleEditStatus(scope)"
-              class="disabled-text-button-forbidden"
+              class="action-bar-text-button-forbidden"
               v-permission="'/api/roles/edit'"
             >{{ scope.row.status ? '禁用' : '启用' }}</el-button>
             <el-button
@@ -69,7 +69,7 @@
               icon="el-icon-edit"
               size="mini"
               @click="handleUpdate(scope)"
-              class="disabled-text-button-edit"
+              class="action-bar-text-button-edit"
               v-permission="'/api/roles/update'"
             >编辑</el-button>
             <el-popconfirm
@@ -85,7 +85,7 @@
                 icon="el-icon-delete"
                 size="mini"
                 slot="reference"
-                class="disabled-text-button-delete"
+                class="action-bar-text-button-delete"
                 v-permission="'/api/roles/delete'"
               >删除</el-button>
             </el-popconfirm>
@@ -430,5 +430,9 @@ export default {
     top: 0;
     transform: none;
   }
+}
+
+.action-bar-text-button-delete {
+  margin-left: 10px;
 }
 </style>
