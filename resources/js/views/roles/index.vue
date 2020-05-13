@@ -165,7 +165,7 @@
 </template>
 
 <script>
-import { getList, createRole, updateRole, editRole, deleteRole, getPermissions } from '@/js/api/role'
+import { getRoles, createRole, updateRole, editRole, deleteRole, getPermissions } from '@/js/api/roles'
 import Pagination from '@/js/components/Pagination'
 import DialogForm from '@/js/views/components/DialogForm'
 
@@ -232,7 +232,7 @@ export default {
     handleList() {
       this.table.tableListLoading = true
 
-      getList(this.search.fields).then(response => {
+      getRoles(this.search.fields).then(response => {
 
         this.table.tableListLoading = false
         this.search.searchBtnLoding = false

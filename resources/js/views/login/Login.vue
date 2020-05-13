@@ -58,7 +58,7 @@
 </template>
 
 <script>
-import { login } from '@/js/api/admin'
+import { login } from '@/js/api/admins'
 
 export default {
   name: 'Login',
@@ -110,7 +110,7 @@ export default {
               this.loginButtonLoading = false
 
               if (response.data.code == 'OK') {
-                await this.$store.dispatch('admin/setToken', response.data.data.token)
+                await this.$store.dispatch('admins/setToken', response.data.data.token)
                 this.$router.push({ path: this.redirect || '/' })
               }
 

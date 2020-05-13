@@ -1,7 +1,7 @@
 import http from '@/js/utils/http'
 import qs from 'qs'
 
-export function getList(search) {
+export function getPermissions(search) {
   return http.get('/permissions', {
     params: search
   })

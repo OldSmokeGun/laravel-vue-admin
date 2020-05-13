@@ -35,7 +35,7 @@ instance.interceptors.response.use(response => {
       showClose: false,
       type: 'warning'
     }).then(async () => {
-      await store.dispatch('admin/resetInfo')
+      await store.dispatch('admins/resetInfo')
       await store.dispatch('permissions/resetRoutes')
       router.push({ path: '/login' })
     })
