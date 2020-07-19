@@ -16,7 +16,7 @@
     "browser-sync-webpack-plugin": "^2.0.1",
     "cross-env": "^5.1",
     "laravel-mix": "^5.0.1",
-    "lodash": "^4.17.13",
+    "lodash": "^4.17.19",
     "mockjs": "^1.1.0",
     "path-to-regexp": "^2.4.0",
     "resolve-url-loader": "^2.3.1",
